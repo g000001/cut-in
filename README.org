@@ -1,0 +1,120 @@
+* cut-in
+
+#+BEGIN_SRC 
+(named-readtables:in-readtable :cut-in)
+#+END_SRC
+
+** print debug
+
+#+BEGIN_SRC 
+(defun mahaman (n)
+  (list n (* n n) (list #>>>(* n n n))))
+
+(mahaman 8)
+;;; file:///foo.lisp:745
+;;;
+;;; (* N N N) => 512
+;=>  (8 64 (512))
+#+END_SRC
+
+** break
+
+#+BEGIN_SRC 
+(defun kandi (n)
+  (list n (* n n) (list #>break>>(* n n n))))
+
+(kandi 42)
+;;; (* N N N) => 74088
+
+; file:///ubuntu/home/mc/lisp/work/g000001-cl-daily-scratch/cl-2014-05-03.lisp:888
+;    [Condition of type SIMPLE-CONDITION]
+; 
+; Restarts:
+;  0: [CONTINUE] Return from BREAK.
+;  1: [RETRY] Retry SLIME evaluation request.
+;  2: [*ABORT] Return to SLIME's top level.
+;  3: [ABORT] Abort thread (#<THREAD "worker" RUNNING {10165561B3}>)
+; 
+; Backtrace:
+;   0: (KANDI 42)
+;   1: (SB-INT:SIMPLE-EVAL-IN-LEXENV (KANDI 42) #<NULL-LEXENV>)
+;   2: (EVAL (KANDI 42))
+;   3: ((LAMBDA NIL :IN SWANK:EVAL-AND-GRAB-OUTPUT))
+
+;> 0 ;[CONTINUE]
+;=>  (42 1764 (74088))
+#+END_SRC
+
+** time
+
+#+BEGIN_SRC 
+(defun lorto (n)
+  (list n (* n n) (list #>time>>(* n n n))))
+
+(lorto 42)
+;;; file:///ubuntu/home/mc/lisp/work/g000001-cl-daily-scratch/cl-2014-05-03.lisp:1540
+;;;
+;;; (* N N N) => 74088
+
+Evaluation took:
+  0.000 seconds of real time
+  0.000000 seconds of total run time (0.000000 user, 0.000000 system)
+  100.00% CPU
+  1,962 processor cycles
+  0 bytes consed
+;=>  (42 1764 (74088))
+#+END_SRC
+
+** type declaration
+
+#+BEGIN_SRC 
+(defun madalto (n)
+  #> (values t t t float) >>
+  (values 1 2 3 n))
+
+(madalto 8)
+The value 8 is not of type FLOAT.
+   [Condition of type TYPE-ERROR]
+
+Restarts:
+...
+#+END_SRC
+
+** random function
+
+#+BEGIN_SRC 
+(defun dalto (n)
+  (list n #>describe>>(* n n) (list (* n n n))))
+
+(dalto 42)
+;=>  (42 1764 (74088))
+
+;;; file:///ubuntu/home/mc/lisp/work/g000001-cl-daily-scratch/cl-2014-05-03.lisp:2091
+;;;
+;;; (* N N) => 1764
+
+1764
+  [fixnum]
+#+END_SRC
+
+** random lambda expression
+
+#+BEGIN_SRC 
+(defun porfic (n)
+  #> (lambda (x) (print (type-of x))) >>
+  (values n (* n n) (list (* n n n))))
+
+(porfic 42)
+;;; file:///ubuntu/home/mc/lisp/work/g000001-cl-daily-scratch/cl-2014-05-03.lisp:2322
+;;;
+;;; (VALUES N (* N N) (LIST (* N N N))) => 42, 1764, (74088)
+
+
+(INTEGER 0 4611686018427387903) 
+(INTEGER 0 4611686018427387903) 
+CONS 
+
+;=>  42
+;    1764
+;    (74088)
+#+END_SRC
