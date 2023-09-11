@@ -89,9 +89,12 @@
 
 
 (defmacro definition-source-location-emacs-filename&position (&aux (plist (gensym)))
-  `(let* ((,plist 
-           #+:sbcl (sb-c:definition-source-location-plist (sb-c:source-location))
-           #-:sbcl '()))
+  `(let* ((,plist
+           (or
+            #+:sbcl (sb-c:definition-source-location-plist
+                     (sb-c:source-location))
+            #+:lispworks `(:emacs-filename ,(def:location)
+                           :emacs-position ""))))
      (format nil 
              "file://~A:~D" 
              (getf ,plist :emacs-filename)
